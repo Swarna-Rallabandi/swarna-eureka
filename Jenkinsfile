@@ -30,6 +30,11 @@ pipeline {
                 """
             }
         }
+        stage ('DockerBuild'){
+            steps {
+                echo "budiling docker image"
+            }
+        }
         
     }
 }
