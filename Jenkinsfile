@@ -19,15 +19,23 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*jar'
             }
         }
-        stage ('sonarqube'){
+        stage ('sonarqubeCodeAnalysys'){
             steps {
                 echo "starting sonar scan"
-                sh """
-                            mvn clean verify sonar:sonar \
+                withSonarQubeEnv('SonarQubeWH') {
+                      sh """
+             mvn clean verify sonar:sonar \
             -Dsonar.projectKey=i27-eureka \
             -Dsonar.host.url=${env.SONAR_URL}\
             -Dsonar.login=${env.SONAR_TOKEN}
                 """
+                }
+                timeout (time: 2, unit: 'MINUTES'){
+                       script{
+                        waitForQualityGate abortPipeline: true
+                       }
+                }
+               
             }
         }
         stage ('DockerBuild'){
@@ -38,4 +46,4 @@ pipeline {
         
     }
 }
-
+ 
