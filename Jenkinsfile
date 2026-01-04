@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage ('build'){
             steps {
-                echo "building Eureka applicationa"
+                echo "building Eureka applicationda"
                 sh "mvn package"
             }
         }
