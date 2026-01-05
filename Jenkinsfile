@@ -25,7 +25,7 @@ pipeline {
         stage ('sonarqubeCodeAnalysys'){
             steps {
                 echo "starting sonar scan"
-                withSonarQubeEnv('SonarQubeWH') {
+                withSonarQubeEnv('sonar_creds') {
                       sh """
              mvn clean verify sonar:sonar \
             -Dsonar.projectKey=i27-eureka            
