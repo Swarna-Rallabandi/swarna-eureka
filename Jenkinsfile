@@ -1,71 +1,62 @@
 pipeline {
-    agent {
-        label 'slave1'
-    }
+    agent { label 'slave1' }
+
     tools {
         maven 'Maven-3.8.9'
         jdk 'JDk-17'
-    } 
+    }
+
     environment {
         APPLICATION_NAME = "eureka"
         SONAR_URL = "http://136.115.208.251:9000"
-        //SONAR_TOKEN= credentials ('SonarQubeWH')
+        SONAR_SERVER = "SonarQubeWH"
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
-        SONAR_SERVER = "SonarQubeWH"
-       
-    }  
+    }
+
     stages {
-        stage ('build'){
+        stage('build') {
             steps {
                 echo "building ${env.APPLICATION_NAME} applicationda"
                 sh "mvn package -DskipTests=true"
-                archiveArtifacts artifacts: 'target/*jar'
+                archiveArtifacts artifacts: 'target/*.jar'
             }
         }
-        stage ('sonarqubeCodeAnalysys'){
+
+        stage('sonarqubeCodeAnalysys') {
             steps {
                 echo "starting sonar scan"
                 withSonarQubeEnv("${env.SONAR_SERVER}") {
-                      sh """
-             mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=i27-eureka            
-                """
+                    sh """
+                      mvn -X -Dsonar.verbose=true clean verify sonar:sonar \
+                        -Dsonar.projectKey=i27-eureka
+                    """
                 }
-                timeout (time: 2, unit: 'MINUTES'){
-                       script{
+
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
                         waitForQualityGate abortPipeline: true
-                       }
+                    }
                 }
-               
             }
         }
-        stage ('DockerBuild'){
+
+        stage('DockerBuild') {
             steps {
-               // i27-eureka-0.0.1-SNAPSHOT.jar
                 echo "exsting jar format:  i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
-                //new format
-                //i27-eureka-buildnumber(22)-branchname or tag(v1.0).jar
                 echo "new jar formati i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                 echo "budiling docker image"
-                
                 echo "Building Docker image: ${env.IMAGE_NAME}:${env.POM_VERSION}"
 
-                    sh """
-                      docker version
-                      docker build \
-                        --build-arg JAR_FILE= i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING} \
-                        -t ${env.IMAGE_NAME}:${env.POM_VERSION} \
-                        .
-                      docker images | head -n 20
-                    """
+                sh """
+                  docker version
+                  docker build \
+                    --build-arg JAR_FILE=i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING} \
+                    -t ${env.IMAGE_NAME}:${env.POM_VERSION} \
+                    .
+                  docker images | head -n 20
+                """
             }
         }
-        
     }
 }
- 
-//   mvn clean verify sonar:sonar \
-//             -Dsonar.projectKey=i27-eureka \
-//             -Dsonar.host.url=${env.SONAR_URL}\
-//             -Dsonar.login=${env.SONAR_TOKEN}
