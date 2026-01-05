@@ -11,7 +11,7 @@ pipeline {
         SONAR_URL = "http://136.115.208.251:9000"
         SONAR_TOKEN= credentials ('sonar_creds')
         POM_VERSION = readMavenPom().getVersion()
-        POM_PACKAGING = readMavenPom.getPackaging()
+        POM_PACKAGING = readMavenPom().getPackaging()
        
     }  
     stages {
