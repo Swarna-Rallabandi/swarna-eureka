@@ -28,9 +28,7 @@ pipeline {
                 withSonarQubeEnv('SonarQubeWH') {
                       sh """
              mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=i27-eureka \
-            -Dsonar.host.url=${env.SONAR_URL}\
-            -Dsonar.login=${env.SONAR_TOKEN}
+            -Dsonar.projectKey=i27-eureka            
                 """
                 }
                 timeout (time: 2, unit: 'MINUTES'){
@@ -66,3 +64,7 @@ pipeline {
     }
 }
  
+//   mvn clean verify sonar:sonar \
+//             -Dsonar.projectKey=i27-eureka \
+//             -Dsonar.host.url=${env.SONAR_URL}\
+//             -Dsonar.login=${env.SONAR_TOKEN}
