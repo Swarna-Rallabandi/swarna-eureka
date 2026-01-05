@@ -12,7 +12,7 @@ pipeline {
         SONAR_TOKEN= credentials ('sonar_creds')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom.getPackaging()
-        BUILD_NUMBER
+       
     }  
     stages {
         stage ('build'){
@@ -47,7 +47,7 @@ pipeline {
                 echo "exsting jar format:  i27-${env.APPLICATION_NAME}-${env.POM_VERSION}-${env.POM_PACKAGING}"
                 //new format
                 //i27-eureka-buildnumber(22)-branchname or tag(v1.0).jar
-                echo "new jar formati i27-${env.APPLICATION_NAME}-${env.BUILD_NUMBER}"
+                echo "new jar formati i27-${env.APPLICATION_NAME}"
                 echo "budiling docker image"
             }
         }
