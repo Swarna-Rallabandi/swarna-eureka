@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.lerner</groupId>
-	<artifactId>i27-eureka</artifactId>
+	<artifactId>i27-eureka1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>i27-eureka</name>
+	<name>i27-eureka1</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<spring-cloud.version>2022.0.1</spring-cloud.version>

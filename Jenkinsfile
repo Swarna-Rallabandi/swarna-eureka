@@ -22,10 +22,12 @@ pipeline {
         stage ('sonarqube'){
             steps{
                 echo " starting sonar scans"
+                sh """
+                
+                """
             }
         }
 
-       
-        }
-    }
+     }
+ }
 
