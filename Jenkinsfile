@@ -10,7 +10,10 @@ pipeline {
         APPLICATION_NAME = "eureka"
         SONAR_URL = "http://136.115.208.251:9000"
         SONAR_TOKEN= credentials ('sonar_creds')
-    }
+        POM_VERSION = readMavenPom().getVersion()
+        POM_PACKAGING = readMavenPom.getPackaging()
+        BUILD_NUMBER
+    }  
     stages {
         stage ('build'){
             steps {
@@ -40,6 +43,11 @@ pipeline {
         }
         stage ('DockerBuild'){
             steps {
+               // i27-eureka-0.0.1-SNAPSHOT.jar
+                echo "exsting jar format:  i27-${env.APPLICATION_NAME}-${env.POM_VERSION}-${env.POM_PACKAGING}"
+                //new format
+                //i27-eureka-buildnumber(22)-branchname or tag(v1.0).jar
+                echo "new jar formati i27-${env.APPLICATION_NAME}-${env.BUILD_NUMBER}"
                 echo "budiling docker image"
             }
         }
