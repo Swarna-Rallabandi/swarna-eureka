@@ -84,7 +84,26 @@ pipeline {
       }
     }
 
-    stage('DockerBuild') {
+     stage('DockerBuild') {
       steps {
         echo "Building Docker image: ${env.IMAGE_NAME}:${env.POM_VERSION}"
-        sh ""
+        sh """
+          docker version
+          docker build \
+            --build-arg JAR_FILE=${env.DOCKER_JAR_NAME} \
+            -t ${env.IMAGE_NAME}:${env.POM_VERSION} \
+            .
+          docker images | head -n 20
+        """
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "Pipeline finished: ${currentBuild.currentResult}"
+      // Optional cleanup:
+      // sh "rm -f '${env.DOCKER_JAR_NAME}' || true"
+    }
+  }
+}
