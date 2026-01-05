@@ -49,6 +49,17 @@ pipeline {
                 //i27-eureka-buildnumber(22)-branchname or tag(v1.0).jar
                 echo "new jar formati i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                 echo "budiling docker image"
+                echo "Using JAR: ${jarPath}"
+                echo "Building Docker image: ${env.IMAGE_NAME}:${env.POM_VERSION}"
+
+                    sh """
+                      docker version
+                      docker build \
+                        --build-arg JAR_FILE=${jarPath} \
+                        -t ${env.IMAGE_NAME}:${env.POM_VERSION} \
+                        .
+                      docker images | head -n 20
+                    """
             }
         }
         
