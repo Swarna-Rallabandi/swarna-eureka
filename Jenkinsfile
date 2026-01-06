@@ -12,8 +12,9 @@ pipeline {
         SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging ()     
-        //DOCKER_HUB = "docker.io/swarna441"   
-        //DOCKER_CREDS = credentials('docker_token')
+        DOCKER_HUB = "docker.io/swarna441"   
+        DOCKER_NAMESPACE = "swarna441"
+        DOCKER_CREDS = credentials('docker_token')
         //JFROG_DOCKER_REPO = "abc.jfrog.io"
     }
 
@@ -61,6 +62,11 @@ pipeline {
                 echo "docker build image"
                 docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
                 
+                echo "docker login before push to dockerhub"
+                echo "${DOCKER_TOKEN} | docker login -u ${DOCKER_NAMESPACE} -p password-stdin
+
+                echo "docker push to dockerhub"
+                docker push ${DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
              }
          }
