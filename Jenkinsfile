@@ -8,8 +8,8 @@ pipeline {
 
     environment {
         APPLICATION_NAME = "eureka"
-        EUREKA2_URL = "http://136.115.208.251:9000"
-        EUREKA2_TOKEN = credentials('eureka2_token')
+        SONAR_EUREKA2_URL = "http://136.115.208.251:9000"
+        SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
     }
 
     stages {
@@ -28,9 +28,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube'){
                      sh """
                         mvn clean verify sonar:sonar \
-                            -Dsonar.projectKey=i27-eureka2 \
-                            -Dsonar.host.url=${env.EUREKA2_URL} \
-                            -Dsonar.login=${env.EUREKA2_TOKEN}
+                            -Dsonar.projectKey=i27-eureka2 
                         """
             }
                 timeout (time: 10, unit: 'MINUTES'){
@@ -43,6 +41,7 @@ pipeline {
             }
               
         }
+        
         stage ('DockerBuild'){
             steps {
                  echo "building the Image"
@@ -52,3 +51,6 @@ pipeline {
      }
  }
 
+
+                            // -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
+                            // -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
