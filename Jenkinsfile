@@ -13,7 +13,6 @@ pipeline {
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging ()     
         DOCKER_HUB = "docker.io/swarna441"   
-        DOCKER_NAMESPACE = "swarna441"
         DOCKER_CREDS = credentials('docker_creds')
         //JFROG_DOCKER_REPO = "abc.jfrog.io"
     }
