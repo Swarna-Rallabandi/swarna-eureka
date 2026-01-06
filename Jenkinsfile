@@ -20,29 +20,29 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar'
             }
         }
-        // stage ('sonarqube'){
-        //     steps{
-        //         echo " starting sonar scans"
-        //         //to make the sonarqube stage fail if there are code smells >3
-        //         //to access 'withSonarQubeEnv' ,in UI settings---/var/lib/jenkins --------add sonarqube servers (url/token)  
-        //         withSonarQubeEnv('SonarQube'){
-        //              sh """
-        //                 mvn clean verify sonar:sonar \
-        //                     -Dsonar.projectKey=i27-eureka2 \
-        //                     -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
-        //                     -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
-        //                 """
-        //     }
-        //         timeout (time: 5, unit: 'MINUTES'){
-        //             script {
-        //                 //to access this add in sonarqube/webhook (add jenkins master url/creds)
-        //                 waitForQualityGate abortPipeline: true
-        //             }
-        //         }
+        stage ('sonarqube'){
+            steps{
+                echo " starting sonar scans"
+                //to make the sonarqube stage fail if there are code smells >3
+                //to access 'withSonarQubeEnv' ,in UI settings---/var/lib/jenkins --------add sonarqube servers (url/token)  
+                withSonarQubeEnv('SonarQube'){
+                     sh """
+                        mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=i27-eureka2 \
+                            -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
+                            -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
+                        """
+            }
+                timeout (time: 5, unit: 'MINUTES'){
+                    script {
+                        //to access this add in sonarqube/webhook (add jenkins master url/creds)
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
                     
-        //     }
+            }
               
-        // }
+        }
         
         stage ('DockerBuild'){
             steps {
