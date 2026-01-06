@@ -32,13 +32,13 @@ pipeline {
                     -Dsonar.login=${env.EUREKA2_TOKEN}
                 """
             }
-            timeout (time: 2, unit: 'MINUTES')
+                timeout (time: 2, unit: 'MINUTES')
                 }
               
         }
         stage ('DockerBuild'){
             steps {
-
+                ehco "building the Image"
             }
         }
 
