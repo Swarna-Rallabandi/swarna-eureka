@@ -33,7 +33,7 @@ pipeline {
                             -Dsonar.login=${env.EUREKA2_TOKEN}
                         """
             }
-                timeout (time: 2, unit: 'MINUTES'){
+                timeout (time: 5, unit: 'MINUTES'){
                     script {
                         //to access this add in sonarqube/webhook (add jenkins master url/creds)
                         waitForQualityGate abortPipeline: true
