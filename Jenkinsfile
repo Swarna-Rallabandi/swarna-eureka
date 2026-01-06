@@ -31,7 +31,7 @@ pipeline {
                             -Dsonar.projectKey=i27-eureka2 
                         """
             }
-                timeout (time: 10, unit: 'MINUTES'){
+                timeout (time: 2, unit: 'MINUTES'){
                     script {
                         //to access this add in sonarqube/webhook (add jenkins master url/creds)
                         waitForQualityGate abortPipeline: true
