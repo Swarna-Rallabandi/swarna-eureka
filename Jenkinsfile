@@ -38,7 +38,7 @@ pipeline {
         }
         stage ('DockerBuild'){
             steps {
-
+                 ehco "building the Image"
             }
         }
 
