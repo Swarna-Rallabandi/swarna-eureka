@@ -11,7 +11,7 @@ pipeline {
         SONAR_EUREKA2_URL = "http://136.115.208.251:9000"
         SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
         POM_VERSION = readMavenPom().getVersion()
-        POM_PACAGING = readMavenPom.getPackging ()
+        POM_PACKAGING = readMavenPom.getPackaging ()
         
     }
 
@@ -50,11 +50,11 @@ pipeline {
         stage ('DockerBuildImage'){
             steps {
                 //i27-eureka2-0.0.1-SNAPSHOT.jar
-                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACAGING}"
+                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
                 echo "building the Image"
                 //new format
                 //i27-eureka2-22-master.jar
-                echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACAGING}"
+                echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                    
             }
         }
