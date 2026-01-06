@@ -65,7 +65,7 @@ pipeline {
                 docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
 
                 echo "docker push to dockerhub"
-                docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:$GIT_COMMIT
+                docker push ${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
              }
          }
