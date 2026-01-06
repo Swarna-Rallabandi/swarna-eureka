@@ -29,8 +29,8 @@ pipeline {
                      sh """
                         mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=i27-eureka2 \
-                            // -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
-                            // -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
+                            -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
+                            -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
                         """
             }
                 timeout (time: 5, unit: 'MINUTES'){
