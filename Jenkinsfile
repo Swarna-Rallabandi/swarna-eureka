@@ -14,7 +14,7 @@ pipeline {
         POM_PACKAGING = readMavenPom().getPackaging ()     
         DOCKER_HUB = "docker.io/swarna441"   
         DOCKER_NAMESPACE = "swarna441"
-        DOCKER_CREDS = credentials('docker_token')
+        DOCKER_CREDS = credentials('docker_creds')
         //JFROG_DOCKER_REPO = "abc.jfrog.io"
     }
 
@@ -63,7 +63,7 @@ pipeline {
                 docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
                 
                 echo "docker login before push to dockerhub"
-                echo "${env.DOCKER_CREDS} | docker login -u ${env.DOCKER_NAMESPACE} -p password-stdin
+                docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
 
                 echo "docker push to dockerhub"
                 docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
