@@ -59,13 +59,13 @@ pipeline {
                 echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                 
                 echo "docker build image"
-                docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
+                docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
                 
                 echo "docker login before push to dockerhub"
                 docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
 
                 echo "docker push to dockerhub"
-                docker push ${env.APPLICATION_NAME}:${GIT_COMMIT}
+                docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
              }
          }
