@@ -55,8 +55,8 @@ pipeline {
                 //i27-eureka2-22-master.jar
                 echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                    
-            }
-        }
+             }
+         }
 
      }
  }
