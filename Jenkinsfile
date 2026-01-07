@@ -75,24 +75,32 @@ pipeline {
                 echo "deploy top dev"
                 //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
                 //echo "it will fail now as running the same port to create container"
-                script {
-                    try {
-                      //stop the container 
-                     sh "docker stop ${env.APPLICATION_NAME}-dev"
-                    //remove the container 
-                     sh "docker rm ${env.APPLICATION_NAME}-dev"
-                    } catch (err) {
-                        echo "error caught :$err"
-                    }
-                   
-                    //create the conatiner again
-                    sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                }
+               script{
+                    dockerDeploy('dev', '5761').call()
+               } 
             }
          }
 
 
      }
+ }
+ def dockerDeploy(envDeploy, port){
+    return {
+      echo "deploying to $envDeploy"
+      script {
+                    try {
+                      //stop the container 
+                     sh "docker stop ${env.APPLICATION_NAME}-$envDeploy"
+                    //remove the container 
+                     sh "docker rm ${env.APPLICATION_NAME}-$envDeploy"
+                    } catch (err) {
+                        echo "error caught :$err"
+                    }
+                   
+                    //create the conatiner again
+                    sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p $port -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                }
+    }
  }
 
 
