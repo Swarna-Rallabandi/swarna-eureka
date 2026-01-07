@@ -73,8 +73,16 @@ pipeline {
          stage ('DeploytoDev'){
             steps {
                 echo "deploy top dev"
-                sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                echo "it will fail now as running the same port to create container"
+                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                //echo "it will fail now as running the same port to create container"
+                script {
+                    //stop the container 
+                     sh "docker stop ${env.APPLICATION_NAME}-dev"
+                    //remove the container 
+                     sh "docker rm ${env.APPLICATION_NAME}-dev"
+                    //create the conatiner again
+                    sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                }
             }
          }
 
