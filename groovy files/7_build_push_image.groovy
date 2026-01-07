@@ -18,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage('mvnBuild') {
+        stage('build') {
             steps {
                 echo "building ${env.APPLICATION_NAME} applicationda"
                 sh "mvn package -DskipTests=true"
@@ -49,7 +49,7 @@ pipeline {
               
         }
         
-        stage ('DockerBuildPushImage'){
+        stage ('DockerBuildImage'){
             steps {
                 //i27-eureka2-0.0.1-SNAPSHOT.jar
                 sh """
@@ -70,19 +70,9 @@ pipeline {
              }
          }
 
-         stage ('DeploytoDev'){
-            steps {
-                echo "deploy top dev"
-                sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-            }
-         }
-
-
      }
  }
 
 
-//dev = 5761
-//test=6761
-//stage= 7761
-//prod = 8761
+                            // -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
+                            // -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
