@@ -57,16 +57,8 @@ pipeline {
                 cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
                 echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"                          
                 echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-                
-                echo "docker build image"
-                docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
-                
-                echo "docker login before push to dockerhub"
-                docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-
-                echo "docker push to dockerhub"
-                docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
+                dockerBuildandPush().call()
              }
          }
 
@@ -80,10 +72,56 @@ pipeline {
                } 
             }
          }
-
+        stage ('DeploytoTest'){
+            steps {
+                echo "deploy top Test"
+                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                //echo "it will fail now as running the same port to create container"
+               script{
+                    dockerDeploy('Test', '6761').call()
+               } 
+            }
+         } 
+        stage ('DeploytoStage'){
+            steps {
+                echo "deploy top Stage"
+                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                //echo "it will fail now as running the same port to create container"
+               script{
+                    dockerDeploy('Stage', '7761').call()
+               } 
+            }
+         } 
+         stage ('Deploytoprod'){
+            steps {
+                echo "deploy top prod"
+                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                //echo "it will fail now as running the same port to create container"
+               script{
+                    dockerDeploy('prod', '8761').call()
+               } 
+            }
+         } 
 
      }
  }
+
+def dockerBuildandPush(){
+    return{
+        script {
+               echo "docker build image"
+               sh "docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd" 
+                
+                echo "docker login before push to dockerhub"
+                sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
+
+                echo "docker push to dockerhub"
+                sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+        }
+    }
+    
+}
+
  def dockerDeploy(envDeploy, port){
     return {
       echo "deploying to $envDeploy"
