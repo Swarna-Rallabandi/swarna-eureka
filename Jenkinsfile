@@ -58,7 +58,10 @@ pipeline {
                 echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"                          
                 echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                 """
-                dockerBuildandPush().call()
+                script {
+                      dockerBuildandPush().call()
+                }
+                
              }
          }
 
