@@ -93,7 +93,7 @@ pipeline {
              when {
                 anyOf {
                     expression {
-                        params.deployToTest == 'yes'
+                        params.dockerPush == 'yes'
                     }
                 }
             }
@@ -134,7 +134,7 @@ pipeline {
             when {
                 anyOf {
                     expression {
-                        params.deployToDev == 'yes'
+                        params.deployToTest == 'yes'
                        
                     }
                 }
