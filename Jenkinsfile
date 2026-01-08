@@ -167,6 +167,10 @@ pipeline {
                        
                     }
                 }
+                anyOf {
+                    branch 'release*'
+                    tag pattern: "v\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}", comparator: "REGEXP"
+                }
             }
             steps {
                 echo "deploy to Stage"
@@ -184,6 +188,9 @@ pipeline {
                         params.deployToProd == 'yes'
                        
                     }
+                }
+                  anyOf {
+                     tag pattern: "v\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}", comparator: "REGEXP"
                 }
             }
             steps {
