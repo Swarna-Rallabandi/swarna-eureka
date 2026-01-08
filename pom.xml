@@ -11,7 +11,7 @@
 	<groupId>com.lerner</groupId>
 	<artifactId>i27-eureka3</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>i27-eureka2</name>
+	<name>i27-eureka3</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<spring-cloud.version>2022.0.1</spring-cloud.version>
