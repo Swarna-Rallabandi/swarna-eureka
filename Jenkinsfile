@@ -166,7 +166,7 @@ pipeline {
             when {
                 anyOf {
                     expression {
-                        params.deployToTest == 'yes'
+                        params.deployToStage == 'yes'
                        
                     }
                 }
@@ -183,7 +183,7 @@ pipeline {
             when {
                 anyOf {
                     expression {
-                        params.deployToDev == 'yes'
+                        params.deployToProd == 'yes'
                        
                     }
                 }
