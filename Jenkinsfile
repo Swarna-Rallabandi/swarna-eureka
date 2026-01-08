@@ -122,7 +122,7 @@ pipeline {
                 }
             }
             steps {
-                echo "deploy top dev"
+                echo "deploy to dev"
                 //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
                 //echo "it will fail now as running the same port to create container"
                script{
@@ -140,9 +140,24 @@ pipeline {
                 }
             }
             steps {
-                echo "deploy top Test"
+                echo "deploy to Test"
                 
                script{
+                echo "${GIT_COMMIT}"
+                 sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${env.DOCKER_CREDS_PSW}"
+
+                    def image = "${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                    def imageExists = sh(
+                            script: "docker pull ${image}",
+                            returnStatus: true
+                        ) == 0
+
+                    if (!imageExists) {
+                    dockerBuildandPush().call()
+                    } else
+                    echo "image found"
+                    { 
+
                     dockerDeploy('Test', '6761').call()
                } 
             }
@@ -151,13 +166,13 @@ pipeline {
             when {
                 anyOf {
                     expression {
-                        params.deployToDev == 'yes'
+                        params.deployToTest == 'yes'
                        
                     }
                 }
             }
             steps {
-                echo "deploy top Stage"
+                echo "deploy to Stage"
               
                script{
                     dockerDeploy('Stage', '7761').call()
@@ -174,7 +189,7 @@ pipeline {
                 }
             }
             steps {
-                echo "deploy top prod"
+                echo "deploy to prod"
              
                script{
                     dockerDeploy('prod', '8761').call()
