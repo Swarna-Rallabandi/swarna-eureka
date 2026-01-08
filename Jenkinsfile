@@ -154,9 +154,9 @@ pipeline {
 
                     if (!imageExists) {
                     dockerBuildandPush().call()
-                    } else
+                    } else{
                     echo "image found"
-                    { 
+                    }
 
                     dockerDeploy('Test', '6761').call()
                } 
