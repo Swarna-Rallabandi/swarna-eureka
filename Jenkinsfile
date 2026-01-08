@@ -260,7 +260,7 @@ def imageValidation(){
     return {
         try {
              sh " docker pull ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-             prinln("image pulled successfully")
+             println("image pulled successfully")
         } catch (Exception e) {
          buildApp().call()
          dockerBuildandPush().call()
