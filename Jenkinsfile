@@ -126,6 +126,7 @@ pipeline {
                 //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
                 //echo "it will fail now as running the same port to create container"
                script{
+                     imageValidation().call()
                     dockerDeploy('dev', '5761').call()
                } 
             }
@@ -143,20 +144,21 @@ pipeline {
                 echo "deploy to Test"
                 
                script{
-                echo "${GIT_COMMIT}"
-                 sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${env.DOCKER_CREDS_PSW}"
+                // echo "${GIT_COMMIT}"
+                //  sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${env.DOCKER_CREDS_PSW}"
 
-                    def image = "${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                    def imageExists = sh(
-                            script: "docker pull ${image}",
-                            returnStatus: true
-                        ) == 0
+                //     def image = "${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                //     def imageExists = sh(
+                //             script: "docker pull ${image}",
+                //             returnStatus: true
+                //         ) == 0
 
-                    if (!imageExists) {
-                    dockerBuildandPush().call()
-                    } else{
-                    echo "image found"
-                    }
+                //     if (!imageExists) {
+                //     dockerBuildandPush().call()
+                //     } else{
+                //     echo "image found"
+                //     }
+                    imageValidation().call()
 
                     dockerDeploy('Test', '6761').call()
                } 
@@ -175,6 +177,7 @@ pipeline {
                 echo "deploy to Stage"
               
                script{
+                    imageValidation().call()
                     dockerDeploy('Stage', '7761').call()
                } 
             }
@@ -243,6 +246,18 @@ def buildApp(){
     }
  }
 
+def imageValidation(){
+    return {
+        try {
+             sh " docker pull ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+             prinln("image pulled successfully")
+        } catch (Exception e) {
+         buildApp().call()
+         dockerBuildandPush().call()
+        }
+       
+    }
+}
 
 //dev = 5761
 //test=6761
