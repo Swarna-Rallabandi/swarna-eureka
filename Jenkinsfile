@@ -99,12 +99,7 @@ pipeline {
             }
             steps {
                 //i27-eureka2-0.0.1-SNAPSHOT.jar
-                sh """
-                ls -la
-                cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
-                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"                          
-                echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-                """
+               
                 script {
                       dockerBuildandPush().call()
                 }
@@ -172,6 +167,7 @@ pipeline {
                        
                     }
                 }
+                anyOf
             }
             steps {
                 echo "deploy to Stage"
@@ -206,6 +202,14 @@ pipeline {
 def dockerBuildandPush(){
     return{
         script {
+               sh """
+                
+            ls -la
+                cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
+                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"                          
+                echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+
+                """
                echo "docker build image"
                sh "docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd" 
                 
