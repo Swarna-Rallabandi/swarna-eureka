@@ -238,7 +238,7 @@ def buildApp(){
                     }
                    
                     //create the conatiner again
-                    sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p $port -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+                    sh "docker run --name ${env.APPLICATION_NAME}-$envDeploy -d -p $port -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
                 }
     }
  }
