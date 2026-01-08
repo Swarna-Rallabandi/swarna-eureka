@@ -167,7 +167,6 @@ pipeline {
                        
                     }
                 }
-                anyOf
             }
             steps {
                 echo "deploy to Stage"
