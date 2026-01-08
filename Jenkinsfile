@@ -194,7 +194,8 @@ pipeline {
                 }
             }
             steps {
-                echo "deploy to prod"
+                timeout(time: 300, unit: 'SECONDS')
+                input message : "deploying Eureka to production ?", ok: 'yes' , submitter: 'sre, swarna'
              
                script{
                     dockerDeploy('prod', '8761').call()
