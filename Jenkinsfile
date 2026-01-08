@@ -5,6 +5,38 @@ pipeline {
         maven 'Maven-3.8.9'
         jdk 'JDk-17'
     }
+    parameters {
+        choice(
+            name: 'buildOnly',
+            choices: 'no\nyes',
+            description: 'this will only build the applicaiton'
+            )
+        choice(
+            name: 'dockerPush',
+            choices: 'no\nyes',
+            description: 'this will build and push the image to registry'
+            )
+        choice(
+            name: 'deployToDev',
+            choices: 'no\nyes',
+            description: 'deploy to dev'
+            )
+        choice(
+            name: 'deployToTest',
+            choices: 'no\nyes',
+            description: 'deploy to Test'
+            )
+        choice(
+            name: 'deployToStage',
+            choices: 'no\nyes',
+            description: 'deploy to Stage'
+            )
+        choice(
+            name: 'deployToProd',
+            choices: 'no\nyes',
+            description: 'deploy to Prod'
+            )
+    }
 
     environment {
         APPLICATION_NAME = "eureka2"
@@ -19,10 +51,18 @@ pipeline {
 
     stages {
         stage('mvnBuild') {
+            when {
+                anyOf {
+                    expression {
+                        params.buildOnly == 'yes'
+                        params.dockerPush == 'yes'
+                    }
+                }
+            }
             steps {
-                echo "building ${env.APPLICATION_NAME} applicationda"
-                sh "mvn package -DskipTests=true"
-                archiveArtifacts artifacts: 'target/*.jar'
+              script {
+                buildApp().call()
+              }
             }
         }
         stage ('sonarqube'){
@@ -50,6 +90,13 @@ pipeline {
         }
         
         stage ('DockerBuildPushImage'){
+             when {
+                anyOf {
+                    expression {
+                        params.deployToTest == 'yes'
+                    }
+                }
+            }
             steps {
                 //i27-eureka2-0.0.1-SNAPSHOT.jar
                 sh """
@@ -66,6 +113,14 @@ pipeline {
          }
 
          stage ('DeploytoDev'){
+             when {
+                anyOf {
+                    expression {
+                        params.deployToDev == 'yes'
+                       
+                    }
+                }
+            }
             steps {
                 echo "deploy top dev"
                 //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
@@ -76,30 +131,51 @@ pipeline {
             }
          }
         stage ('DeploytoTest'){
+            when {
+                anyOf {
+                    expression {
+                        params.deployToDev == 'yes'
+                       
+                    }
+                }
+            }
             steps {
                 echo "deploy top Test"
-                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                //echo "it will fail now as running the same port to create container"
+                
                script{
                     dockerDeploy('Test', '6761').call()
                } 
             }
          } 
         stage ('DeploytoStage'){
+            when {
+                anyOf {
+                    expression {
+                        params.deployToDev == 'yes'
+                       
+                    }
+                }
+            }
             steps {
                 echo "deploy top Stage"
-                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                //echo "it will fail now as running the same port to create container"
+              
                script{
                     dockerDeploy('Stage', '7761').call()
                } 
             }
          } 
          stage ('Deploytoprod'){
+            when {
+                anyOf {
+                    expression {
+                        params.deployToDev == 'yes'
+                       
+                    }
+                }
+            }
             steps {
                 echo "deploy top prod"
-                //sh "docker run --name ${env.APPLICATION_NAME}-dev -d -p 5761:8761 -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
-                //echo "it will fail now as running the same port to create container"
+             
                script{
                     dockerDeploy('prod', '8761').call()
                } 
@@ -123,6 +199,14 @@ def dockerBuildandPush(){
         }
     }
     
+}
+def buildApp(){
+    return {
+                echo "building ${env.APPLICATION_NAME} applicationda"
+                sh "mvn package -DskipTests=true"
+                archiveArtifacts artifacts: 'target/*.jar'
+    }
+
 }
 
  def dockerDeploy(envDeploy, port){
