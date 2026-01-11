@@ -204,17 +204,17 @@ pipeline {
          } 
 
      }
-     post {
-        always {
-            mail bcc: '',
-             body: 'this is test email',
-             cc: '',
-             from: '',
-             replyTo: '',
-             subject: '',
-             to: 'swarna.varsha100@gmail.com'
-        }
-     }
+    //  post {
+    //     always {
+    //         mail bcc: '',
+    //          body: 'this is test email',
+    //          cc: '',
+    //          from: '',
+    //          replyTo: '',
+    //          subject: '',
+    //          to: 'swarna.varsha100@gmail.com'
+    //     }
+    //  }
  }
 
 def dockerBuildandPush(){
