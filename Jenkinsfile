@@ -73,7 +73,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube'){
                      sh """
                         mvn clean verify sonar:sonar \
-                            -Dsonar.projectKey=i27-eureka2 \
+                            -Dsonar.projectKey=i27-eureka \
                             -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
                             -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
                         """
