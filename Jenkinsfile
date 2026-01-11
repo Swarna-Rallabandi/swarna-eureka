@@ -232,7 +232,7 @@ def dockerBuildandPush(){
                sh "docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd" 
                 
                 echo "docker login before push to dockerhub"
-                sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
+                sh "docker login -u ${env.DOCKER_CREDS_USR} -p ${env.DOCKER_CREDS_PSW}"
 
                 echo "docker push to dockerhub"
                 sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
