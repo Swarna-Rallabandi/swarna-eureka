@@ -40,8 +40,8 @@ pipeline {
 
     environment {
         APPLICATION_NAME = "eureka3"
-        SONAR_EUREKA2_URL = "http://54.252.136.132:9000"
-        SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
+        // SONAR_EUREKA2_URL = "http://54.252.136.132:9000"
+        // SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging ()     
         DOCKER_HUB = "docker.io/swarna441"   
