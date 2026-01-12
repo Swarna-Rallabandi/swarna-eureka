@@ -40,7 +40,7 @@ pipeline {
 
     environment {
         APPLICATION_NAME = "eureka3"
-        SONAR_EUREKA2_URL = "http://34.27.17.248:9000"
+        SONAR_EUREKA2_URL = "http://54.252.136.132:9000"
         SONAR_EUREKA2_TOKEN = credentials('eureka2_token')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging ()     
@@ -73,7 +73,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube'){
                      sh """
                         mvn clean verify sonar:sonar \
-                            -Dsonar.projectKey=i27-eureka \
+                            -Dsonar.projectKey=i27-eureka2 \
                             -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
                             -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
                         """
@@ -220,13 +220,10 @@ pipeline {
 def dockerBuildandPush(){
     return{
         script {
-               sh """
-                
+               sh """                
             ls -la
                 cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
-                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"                          
-                echo "new format : i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-
+                echo "existing jar format : i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"  
                 """
                echo "docker build image"
                sh "docker build --no-cache --build-arg JAR_PATH=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd" 
