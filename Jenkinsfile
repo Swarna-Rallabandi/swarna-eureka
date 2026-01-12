@@ -12,7 +12,7 @@ pipeline {
             description: 'this will only build the applicaiton'
             )
         choice(
-            name: 'dockerPush',$riMa
+            name: 'dockerPush',
             choices: 'no\nyes',
             description: 'this will build and push the image to registry'
             )
