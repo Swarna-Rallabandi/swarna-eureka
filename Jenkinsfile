@@ -12,7 +12,7 @@ pipeline {
             description: 'this will only build the applicaiton'
             )
         choice(
-            name: 'dockerPush',
+            name: 'dockerPush',$riMa
             choices: 'no\nyes',
             description: 'this will build and push the image to registry'
             )
@@ -65,29 +65,29 @@ pipeline {
               }
             }
         }
-        // stage ('sonarqube'){
-        //     steps{
-        //         echo " starting sonar scans"
-        //         //to make the sonarqube stage fail if there are code smells >3
-        //         //to access 'withSonarQubeEnv' ,in UI settings---/var/lib/jenkins --------add sonarqube servers (url/token)  
-        //         withSonarQubeEnv('SonarQube'){
-        //              sh """
-        //                 mvn clean verify sonar:sonar \
-        //                     -Dsonar.projectKey=i27-eureka \
-        //                     -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
-        //                     -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
-        //                 """
-        //     }
-        //         timeout (time: 5, unit: 'MINUTES'){
-        //             script {
-        //                 //to access this add in sonarqube/webhook (add jenkins master url/creds)
-        //                 waitForQualityGate abortPipeline: true
-        //             }
-        //         }
+        stage ('sonarqube'){
+            steps{
+                echo " starting sonar scans"
+                //to make the sonarqube stage fail if there are code smells >3
+                //to access 'withSonarQubeEnv' ,in UI settings---/var/lib/jenkins --------add sonarqube servers (url/token)  
+                withSonarQubeEnv('SonarQube'){
+                     sh """
+                        mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=i27-eureka \
+                            -Dsonar.host.url=${env.SONAR_EUREKA2_URL} \
+                            -Dsonar.login=${env.SONAR_EUREKA2_TOKEN}
+                        """
+            }
+                timeout (time: 5, unit: 'MINUTES'){
+                    script {
+                        //to access this add in sonarqube/webhook (add jenkins master url/creds)
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
                     
-        //     }
+            }
               
-        // }
+        }
         
         stage ('DockerBuildPushImage'){
              when {
